@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filament Manager — 3D Printing Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="./src/style.css">
+</head>
+<body data-theme="light">
+
+  <!-- ── Navbar ── -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <div class="nav-logo">🧵</div>
+      Filament<span style="color:var(--accent-blue);">Manager</span>
+    </div>
+    <div class="nav-links">
+      <button id="themeToggleBtn" class="btn btn-secondary btn-sm">🌙 Dark Mode</button>
+    </div>
+  </nav>
+
+  <!-- ── Main ── -->
+  <main class="main-content">
+
+    <!-- Metric Cards -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div>
+          <div class="metric-label">Total Spools</div>
+          <div class="metric-value" id="statTotalSpools">—</div>
+        </div>
+        <div class="metric-icon blue">🧵</div>
+      </div>
+      <div class="metric-card">
+        <div>
+          <div class="metric-label">Empty Spools</div>
+          <div class="metric-value" id="statEmptySpools">—</div>
+        </div>
+        <div class="metric-icon gray">⬜</div>
+      </div>
+      <div class="metric-card">
+        <div>
+          <div class="metric-label">Low Filament Alerts</div>
+          <div class="metric-value" id="statLowAlerts">—</div>
+        </div>
+        <div class="metric-icon amber">⚠️</div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <!-- Search -->
+      <div style="flex-grow:1; min-width:220px;">
+        <input type="text" id="searchInput" class="form-control"
+               placeholder="🔍  Search brand, material, title…">
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-group">
+        <select id="filterMaterial" class="form-control" style="min-width:140px;">
+          <option value="ALL">All Materials</option>
+        </select>
+        <select id="filterBrand" class="form-control" style="min-width:140px;">
+          <option value="ALL">All Brands</option>
+        </select>
+        <select id="filterStatus" class="form-control" style="min-width:130px;">
+          <option value="ALL">All Status</option>
+          <option value="LOW">⚠️ Low Stock</option>
+          <option value="EMPTY">⬜ Empty Spool</option>
+        </select>
+      </div>
+
+      <!-- View Toggle -->
+      <div style="display:flex; gap:0.4rem; border-left:1px solid var(--border-color); padding-left:1rem;">
+        <button id="viewGridBtn" class="btn btn-secondary active" title="Grid View">⊞</button>
+        <button id="viewListBtn" class="btn btn-secondary" title="List View">≡</button>
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex; gap:0.5rem; border-left:1px solid var(--border-color); padding-left:1rem;">
+        <button class="btn btn-outline-green" id="globalLogPrintBtn">⚡ Log Print</button>
+        <button class="btn btn-primary" id="addSpoolBtn">＋ Add Spool</button>
+      </div>
+    </div>
+
+    <!-- Spool Grid / List -->
+    <div id="spoolGridArea" class="spool-grid"></div>
+
+  </main>
+
+  <!-- ════════════ ADD / EDIT SPOOL MODAL ════════════ -->
+  <div class="modal-overlay" id="spoolModalOverlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="spoolModalTitle">Add New Spool</h2>
+        <button class="close-modal-btn" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body" id="spoolModalBody">
+        <!-- Rendered by SpoolModal.js -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary close-modal-btn">Cancel</button>
+        <button class="btn btn-primary" id="saveSpoolSubmitBtn">💾 Save Spool</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ LOG PRINT JOB MODAL ════════════ -->
+  <div class="modal-overlay" id="logPrintModalOverlay">
+    <div class="modal-content" style="max-width:520px;">
+      <div class="modal-header">
+        <h2>⚡ Log Print Job</h2>
+        <button class="close-modal-btn" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.875rem; color:var(--text-muted); margin-bottom:1.25rem;">
+          Select the spools used and enter the weight consumed for each. The amounts will be automatically deducted from your inventory.
+        </p>
+        <form id="printJobForm">
+          <div class="form-group full-width" style="margin-bottom:1.25rem;">
+            <label>Print Job Name</label>
+            <input type="text" name="printName" class="form-control"
+                   placeholder="e.g. Dragon Articulation v2" required>
+          </div>
+
+          <label style="font-size:0.82rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:0.5rem;">
+            Spools Used
+          </label>
+          <div id="multiSpoolSelectionArea">
+            <!-- Rendered by JS -->
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary close-modal-btn">Cancel</button>
+        <button class="btn btn-primary" id="submitPrintJobBtn">✅ Deduct Filament</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

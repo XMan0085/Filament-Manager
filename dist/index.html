@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filament Manager - 3D Printing Spool Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/assets/index-DuYuEqrx.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-Dnn_SOMM.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-area">
+        <div class="logo-icon-wrapper">
+          🧵
+        </div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <h1 class="logo-title">Filament Manager</h1>
+            <span class="logo-badge">Studio Light</span>
+          </div>
+          <p style="font-size: 0.775rem; color: var(--text-muted);">3D Printing Spool & Print Usage Tracker</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="quickLogPrintBtn" class="btn btn-outline-green">
+          ⚡ Quick Log Print
+        </button>
+        <button id="addSpoolBtn" class="btn btn-primary">
+          + Add New Spool
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav-tabs-wrapper">
+    <div class="nav-tabs-container">
+      <button class="nav-tab active" data-tab="inventoryTab">
+        📦 Spool Inventory
+      </button>
+      <button class="nav-tab" data-tab="amsTab">
+        🖨️ AMS & Drybox Map
+      </button>
+      <button class="nav-tab" data-tab="printLogTab">
+        ⚡ Print Jobs & Logs
+      </button>
+      <button class="nav-tab" data-tab="analyticsTab">
+        📊 Material Analytics
+      </button>
+      <button class="nav-tab" data-tab="settingsTab">
+        ⚙️ Backup & Settings
+      </button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <!-- Metrics Bar -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div>
+          <div class="metric-label">Total Spools</div>
+          <div class="metric-value" id="statTotalSpools">0</div>
+        </div>
+        <div class="metric-icon blue">🧵</div>
+      </div>
+
+      <div class="metric-card">
+        <div>
+          <div class="metric-label">Total Net Weight</div>
+          <div class="metric-value" id="statTotalWeight">0.0 kg</div>
+        </div>
+        <div class="metric-icon green">⚖️</div>
+      </div>
+
+
+      <div class="metric-card">
+        <div>
+          <div class="metric-label">Low Filament Alerts</div>
+          <div class="metric-value" id="statLowAlerts">0</div>
+        </div>
+        <div class="metric-icon amber">⚠️</div>
+      </div>
+    </div>
+
+    <!-- Inventory Tab Content -->
+    <section id="inventoryTab" class="tab-content">
+      <div class="toolbar">
+        <div class="search-box">
+          🔍 <input type="text" id="searchInput" placeholder="Search by brand, material, color, or notes...">
+        </div>
+
+        <div class="filter-group">
+          <select id="filterMaterial" class="select-input">
+            <option value="ALL">All Materials</option>
+          </select>
+
+          <select id="filterBrand" class="select-input">
+            <option value="ALL">All Brands</option>
+          </select>
+
+          <select id="filterLocation" class="select-input">
+            <option value="ALL">All Locations</option>
+          </select>
+
+          <select id="filterStatus" class="select-input">
+            <option value="ALL">All Status</option>
+            <option value="LOW">Low Stock (&lt;15%)</option>
+            <option value="AMS">In AMS</option>
+            <option value="DRYBOX">In Drybox</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="spoolGridArea" class="spool-grid"></div>
+    </section>
+
+    <!-- AMS Map Tab Content -->
+    <section id="amsTab" class="tab-content" style="display: none;">
+      <div id="amsMapArea"></div>
+    </section>
+
+    <!-- Print Log Tab Content -->
+    <section id="printLogTab" class="tab-content" style="display: none;">
+      <div id="printLogArea"></div>
+    </section>
+
+    <!-- Analytics Tab Content -->
+    <section id="analyticsTab" class="tab-content" style="display: none;">
+      <div id="analyticsArea"></div>
+    </section>
+
+    <!-- Backup & Settings Tab Content -->
+    <section id="settingsTab" class="tab-content" style="display: none;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2rem; max-width: 700px; margin: 0 auto; box-shadow: var(--shadow-card);">
+        <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">Data Management & Backup</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+          Your filament database and print logs are saved in your browser's local storage. You can export a JSON backup at any time to transfer your data or keep a copy safe.
+        </p>
+
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+          <button id="exportBackupBtn" class="btn btn-primary">
+            📥 Export JSON Backup
+          </button>
+          <button id="importBackupBtn" class="btn btn-secondary">
+            📤 Import JSON Backup
+          </button>
+          <input type="file" id="importFileInput" accept=".json" style="display: none;">
+        </div>
+
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+
+        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--accent-red);">Reset Sample Data</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">
+          Reset all spools and print logs back to default pre-loaded sample data.
+        </p>
+        <button id="resetDataBtn" class="btn btn-secondary" style="color: var(--accent-red); border-color: #fca5a5;">
+          ⚠️ Reset to Sample Data
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Spool Add/Edit Modal -->
+  <div id="spoolModalOverlay" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="spoolModalTitle" class="modal-title">Add New Filament Spool</h3>
+        <button class="btn btn-secondary btn-sm close-modal-btn">✕</button>
+      </div>
+      <div class="modal-body" id="spoolModalBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary close-modal-btn">Cancel</button>
+        <button id="saveSpoolSubmitBtn" class="btn btn-primary">Save Spool</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Print Job Log Modal -->
+  <div id="logPrintModalOverlay" class="modal-overlay">
+    <div class="modal-box" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">⚡ Log 3D Print Job</h3>
+        <button class="btn btn-secondary btn-sm close-modal-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="printJobForm" class="form-grid" style="grid-template-columns: 1fr;">
+          <div class="form-group">
+            <label>Select Filament Spool *</label>
+            <select name="spoolId" id="printSpoolSelect" class="form-control" required></select>
+          </div>
+
+          <div class="form-group">
+            <label>Print Job Name *</label>
+            <input type="text" name="printName" class="form-control" placeholder="e.g. Dragon Articulation, Cable Clip, Benchy" required>
+          </div>
+
+          <div class="form-group">
+            <label>Filament Weight Used (grams) *</label>
+            <input type="number" name="weightUsedG" class="form-control" placeholder="e.g. 35.5" step="0.1" required>
+          </div>
+
+          <div class="form-group">
+            <label>Print Duration (Optional)</label>
+            <input type="text" name="printTime" class="form-control" placeholder="e.g. 1h 45m">
+          </div>
+
+          <div class="form-group">
+            <label>Notes / Slicer Settings</label>
+            <input type="text" name="notes" class="form-control" placeholder="e.g. 0.2mm layer height, 15% infill">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary close-modal-btn">Cancel</button>
+        <button id="submitPrintJobBtn" class="btn btn-outline-green">Deduct Filament & Save Log</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printable Spool Tag Modal -->
+  <div id="tagModalOverlay" class="modal-overlay">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🏷️ Printable Spool Tag</h3>
+        <button class="btn btn-secondary btn-sm close-modal-btn">✕</button>
+      </div>
+      <div class="modal-body" id="tagModalBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary close-modal-btn">Close</button>
+        <button id="triggerPrintBtn" class="btn btn-primary">🖨️ Print Label</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

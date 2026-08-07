@@ -1,0 +1,20 @@
+{
+  "name": "filament-manager",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.1",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "lucide": "^0.344.0"
+  },
+  "devDependencies": {
+    "vite": "^5.1.4"
+  }
+}
