@@ -1,0 +1,22 @@
+# Node dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production build
+dist/
+
+# Local databases (keep template or sample if needed)
+filament.db-journal
+
+# Temporary / capture scripts
+take_screenshots.js
+
+# Environment variables & editor files
+.env
+.env.local
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

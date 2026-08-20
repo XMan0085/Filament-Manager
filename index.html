@@ -10,18 +10,20 @@
 </head>
 <body data-theme="light">
 
-  <!-- ── Navbar ── -->
-  <nav class="navbar">
-    <div class="nav-brand">
-      <div class="nav-logo">🧵</div>
-      Filament<span style="color:var(--accent-blue);">Manager</span>
+  <!-- ── Navbar (Modern, Clean, Borderless) ── -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="nav-brand">
+        <span class="nav-logo-emoji">🧵</span>
+        <span class="brand-text">Filament<span class="brand-accent">Manager</span></span>
+      </div>
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="btn btn-secondary btn-icon" title="Toggle Theme">🌙</button>
+      </div>
     </div>
-    <div class="nav-links">
-      <button id="themeToggleBtn" class="btn btn-secondary btn-sm">🌙 Dark Mode</button>
-    </div>
-  </nav>
+  </header>
 
-  <!-- ── Main ── -->
+  <!-- ── Main Content ── -->
   <main class="main-content">
 
     <!-- Metric Cards -->
@@ -90,6 +92,38 @@
 
   </main>
 
+  <!-- ════════════ FILAMENT DETAILS MODAL ════════════ -->
+  <div class="modal-overlay" id="detailModalOverlay">
+    <div class="modal-content" style="max-width:540px;">
+      <div class="modal-header">
+        <h2 style="font-weight: 800; letter-spacing: -0.02em;">Filament Details</h2>
+        <button class="close-modal-btn" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body" id="detailModalBody">
+        <!-- Rendered by main.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ DELETE CONFIRMATION MODAL ════════════ -->
+  <div class="modal-overlay" id="deleteConfirmOverlay">
+    <div class="modal-content delete-confirm-modal" style="max-width:420px;">
+      <div class="delete-confirm-body">
+        <div class="delete-confirm-icon-wrap">
+          <span class="delete-confirm-icon">🗑️</span>
+        </div>
+        <h2 class="delete-confirm-title">Delete Spool?</h2>
+        <p class="delete-confirm-msg" id="deleteConfirmMessage">
+          This will permanently remove this spool from your inventory.
+        </p>
+      </div>
+      <div class="delete-confirm-actions">
+        <button class="btn btn-secondary" id="deleteCancelBtn" style="flex:1;">Keep It</button>
+        <button class="btn btn-danger-solid" id="deleteConfirmBtn" style="flex:1;">🗑️ Delete</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ════════════ ADD / EDIT SPOOL MODAL ════════════ -->
   <div class="modal-overlay" id="spoolModalOverlay">
     <div class="modal-content">
@@ -125,10 +159,15 @@
                    placeholder="e.g. Dragon Articulation v2" required>
           </div>
 
+          <div class="form-group full-width" style="margin-bottom:1.25rem;">
+            <label>Search Filament</label>
+            <input type="text" id="printSpoolSearch" class="form-control" placeholder="🔍 Search spool brand, material or title...">
+          </div>
+
           <label style="font-size:0.82rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:0.5rem;">
-            Spools Used
+            Select Spools & Enter Grams Used
           </label>
-          <div id="multiSpoolSelectionArea">
+          <div id="multiSpoolSelectionArea" style="max-height: 250px; overflow-y: auto; padding-right: 4px;">
             <!-- Rendered by JS -->
           </div>
         </form>

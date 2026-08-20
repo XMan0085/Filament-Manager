@@ -57,11 +57,10 @@ export class InventoryView {
         </div>
 
         <div class="spool-card-actions">
-          <span style="font-size:0.75rem; color:var(--text-light);">Click to edit</span>
+          <span style="font-size:0.75rem; color:var(--text-light);">Click for details</span>
           <button class="btn btn-danger btn-icon btn-delete-spool"
                   data-spool-id="${spool.id}"
-                  title="Delete Spool"
-                  onclick="event.stopPropagation()">🗑️</button>
+                  title="Delete Spool">🗑️</button>
         </div>
       </div>
     `;

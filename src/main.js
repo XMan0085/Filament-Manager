@@ -107,7 +107,9 @@ class App {
       }
       if (e.target.id === 'detailDeleteBtn') {
         const id = e.target.getAttribute('data-spool-id');
-        this.handleDelete(id);
+        const spool = this.spools.find(s => s.id === id);
+        const label = spool ? `${spool.brand} ${spool.material}${spool.name ? ' — ' + spool.name : ''}` : '';
+        this.handleDelete(id, label);
       }
     });
 
@@ -123,7 +125,10 @@ class App {
 
       if (deleteBtn) {
         e.stopPropagation();
-        await this.handleDelete(deleteBtn.getAttribute('data-spool-id'));
+        const id = deleteBtn.getAttribute('data-spool-id');
+        const spool = this.spools.find(s => s.id === id);
+        const label = spool ? `${spool.brand} ${spool.material}${spool.name ? ' — ' + spool.name : ''}` : '';
+        await this.handleDelete(id, label);
       } else if (card) {
         const id = card.getAttribute('data-spool-id');
         const spool = this.spools.find(s => s.id === id);
@@ -132,14 +137,45 @@ class App {
     });
   }
 
-  async handleDelete(id) {
+  async handleDelete(id, spoolLabel = '') {
     if (!id) return;
-    if (confirm('Delete this spool from inventory?')) {
+    const confirmed = await this.showDeleteConfirm(spoolLabel);
+    if (confirmed) {
       await StorageManager.deleteSpool(id);
       await this.loadData();
       this.render();
       this.closeAllModals();
     }
+  }
+
+  showDeleteConfirm(spoolLabel = '') {
+    return new Promise((resolve) => {
+      const overlay   = document.getElementById('deleteConfirmOverlay');
+      const msgEl     = document.getElementById('deleteConfirmMessage');
+      const confirmBtn = document.getElementById('deleteConfirmBtn');
+      const cancelBtn  = document.getElementById('deleteCancelBtn');
+
+      if (msgEl) {
+        msgEl.innerHTML = spoolLabel
+          ? `Permanently remove <strong>${this._esc(spoolLabel)}</strong> from your inventory? This cannot be undone.`
+          : `Permanently remove this spool from your inventory? This cannot be undone.`;
+      }
+
+      overlay?.classList.add('active');
+
+      const cleanup = (result) => {
+        overlay?.classList.remove('active');
+        confirmBtn?.removeEventListener('click', onConfirm);
+        cancelBtn?.removeEventListener('click', onCancel);
+        resolve(result);
+      };
+
+      const onConfirm = () => cleanup(true);
+      const onCancel  = () => cleanup(false);
+
+      confirmBtn?.addEventListener('click', onConfirm, { once: true });
+      cancelBtn?.addEventListener('click',  onCancel,  { once: true });
+    });
   }
 
   /* ── Render ── */

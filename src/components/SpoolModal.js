@@ -5,28 +5,8 @@ export class SpoolModal {
     const brandOptions = filters.brands.map(b => `<option value="${b}">`).join('');
     const materialOptions = filters.materials.map(m => `<option value="${m}">`).join('');
 
-    const colorHex = s.colorHex || '#FFFFFF';
-
-    // Large filament-focused color grid: 8 columns × 6 rows = 48 colors
-    const colors = [
-      // Whites & Greys
-      '#FFFFFF', '#F5F5F5', '#E0E0E0', '#BDBDBD', '#9E9E9E', '#757575', '#424242', '#212121',
-      // Warm Reds & Pinks
-      '#FF1744', '#F44336', '#E53935', '#C62828', '#FF80AB', '#F48FB1', '#E91E63', '#880E4F',
-      // Oranges & Yellows
-      '#FF6D00', '#FF9100', '#FFB300', '#FFC400', '#FFEB3B', '#FFD600', '#F9A825', '#E65100',
-      // Greens
-      '#00E676', '#4CAF50', '#2E7D32', '#1B5E20', '#76FF03', '#AEEA00', '#8BC34A', '#33691E',
-      // Blues & Cyans
-      '#00B0FF', '#2196F3', '#1565C0', '#0D47A1', '#00E5FF', '#00BCD4', '#006064', '#01579B',
-      // Purples, Browns & Special
-      '#7C4DFF', '#9C27B0', '#4A148C', '#6A1B9A', '#FF6F00', '#5D4037', '#3E2723', '#000000',
-    ];
-
-    const colorGrid = colors.map(c => {
-      const isSelected = c.toUpperCase() === colorHex.toUpperCase();
-      return `<div class="color-swatch-preset ${isSelected ? 'selected' : ''}" data-hex="${c}" title="${c}" style="background-color: ${c};"></div>`;
-    }).join('');
+    const colorHex = s.colorHex || '#2563eb'; // Default to a premium blue
+    const currentWeight = s.remainingWeightG !== undefined ? s.remainingWeightG : 1000;
 
     return `
       <form id="spoolForm">
@@ -52,24 +32,18 @@ export class SpoolModal {
 
           <div class="form-group full-width">
             <label>Filament Color</label>
-            <input type="hidden" name="colorHex" id="colorHexInput" value="${colorHex}">
-            <div class="color-preview-row">
-              <div class="color-preview-swatch" id="colorPreviewSwatch" style="background-color: ${colorHex};"></div>
-              <span class="color-preview-hex" id="colorPreviewHex">${colorHex}</span>
-            </div>
-            <div class="color-grid-palette">
-              ${colorGrid}
+            <div class="color-picker-wrapper">
+              <input type="color" name="colorHex" id="colorHexInput" class="color-picker-input" value="${colorHex}">
+              <div class="color-picker-info">
+                <span class="color-preview-hex" id="colorPreviewHex">${colorHex.toUpperCase()}</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">Click swatch to pick custom color</span>
+              </div>
             </div>
           </div>
 
-          <div class="form-group">
-            <label>Initial Net Weight (g)</label>
-            <input type="number" name="initialWeightG" class="form-control" value="${s.initialWeightG || 1000}" min="0">
-          </div>
-
-          <div class="form-group">
-            <label>Remaining Weight (g)</label>
-            <input type="number" name="remainingWeightG" class="form-control" value="${s.remainingWeightG !== undefined ? s.remainingWeightG : 1000}" min="0">
+          <div class="form-group full-width">
+            <label>Weight (g)</label>
+            <input type="number" name="weightG" class="form-control" value="${currentWeight}" min="0" placeholder="e.g. 1000">
           </div>
 
           <div class="form-group">
@@ -97,27 +71,14 @@ export class SpoolModal {
   }
 
   static attachFormListeners(formElement) {
-    const presets = formElement.querySelectorAll('.color-swatch-preset');
     const colorInput = formElement.querySelector('#colorHexInput');
-    const previewSwatch = formElement.querySelector('#colorPreviewSwatch');
     const previewHex = formElement.querySelector('#colorPreviewHex');
 
-    const updateColor = (hex) => {
-      if (colorInput) colorInput.value = hex;
-      if (previewSwatch) previewSwatch.style.backgroundColor = hex;
-      if (previewHex) previewHex.textContent = hex;
-    };
-
-    presets.forEach(p => {
-      p.addEventListener('click', () => {
-        const hex = p.getAttribute('data-hex');
-        // Clear all selections
-        presets.forEach(preset => preset.classList.remove('selected'));
-        // Mark this one
-        p.classList.add('selected');
-        updateColor(hex);
+    if (colorInput && previewHex) {
+      colorInput.addEventListener('input', (e) => {
+        previewHex.textContent = e.target.value.toUpperCase();
       });
-    });
+    }
   }
 
   static escapeHtml(unsafe) {

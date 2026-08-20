@@ -42,7 +42,9 @@ if (countStmt.get().count === 0) {
     ['spool-2', 'Polymaker', 'PolyLite PETG', 'Teal', '#00B0F0', 1000, 420, '235', '70', '2026-07-15', 'Good for mechanical parts.'],
     ['spool-3', 'eSUN', 'ABS+', 'Fire Engine Red', '#FF0000', 1000, 950, '250', '100', '2026-08-03', 'Requires enclosure.'],
     ['spool-4', 'Overture', 'TPU 95A', 'Ninja Black', '#000000', 1000, 1000, '225', '50', '2026-08-04', 'Flexible. Dry before use.'],
-    ['spool-5', 'Bambu Lab', 'PLA-CF', 'Carbon Black', '#475569', 1000, 120, '230', '60', '2026-06-10', 'Abrasive! Use hardened steel nozzle.']
+    ['spool-5', 'Bambu Lab', 'PLA-CF', 'Carbon Black', '#475569', 1000, 120, '230', '60', '2026-06-10', 'Abrasive! Use hardened steel nozzle.'],
+    ['spool-6', 'Bambu Lab', 'PLA Basic', 'Grey Spool (Empty)', '#757575', 1000, 0, '220', '60', '2026-05-12', 'Fully used spool.'],
+    ['spool-7', 'Creality', 'PETG', 'Red Spool (Empty)', '#FF1744', 1000, 0, '240', '70', '2026-06-01', 'Fully used PETG spool.']
   ];
 
   db.exec('BEGIN TRANSACTION');
